@@ -1,5 +1,7 @@
 package dev.sakshijoshi.productcatalogservice.models;
 
+import dev.sakshijoshi.productcatalogservice.dtos.CategoryDTO;
+import dev.sakshijoshi.productcatalogservice.dtos.ProductDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,4 +14,22 @@ public class Product extends BaseModel{
     private String imageURL;
     private Category category;
 
+    public ProductDTO convert() {
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(this.getId());
+        productDTO.setName(this.getName());
+        productDTO.setDescription(this.getDescription());
+        productDTO.setPrice(this.getPrice());
+        productDTO.setImageURL(this.getImageURL());
+
+        if(this.getCategory() != null) {
+            CategoryDTO categoryDTO = new CategoryDTO();
+            categoryDTO.setId(this.getCategory().getId());
+            categoryDTO.setName(this.getCategory().getName());
+            categoryDTO.setDescription(this.getCategory().getDescription());
+            productDTO.setCategory(categoryDTO);
+        }
+
+        return productDTO;
+    }
 }
