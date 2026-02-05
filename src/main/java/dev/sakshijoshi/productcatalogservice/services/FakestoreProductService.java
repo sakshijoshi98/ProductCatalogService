@@ -1,5 +1,6 @@
 package dev.sakshijoshi.productcatalogservice.services;
 
+import dev.sakshijoshi.productcatalogservice.client.FakeStoreAPIClient;
 import dev.sakshijoshi.productcatalogservice.dtos.FakestoreProductDTO;
 import dev.sakshijoshi.productcatalogservice.models.Product;
 import org.springframework.http.HttpStatusCode;
@@ -13,10 +14,10 @@ import java.util.List;
 @Service
 public class FakestoreProductService implements IProductService {
 
-    private RestTemplate restTemplate;
+    private FakeStoreAPIClient fakeStoreAPIClient;
 
-    private FakestoreProductService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    private FakestoreProductService(FakeStoreAPIClient fakeStoreAPIClient) {
+        this.fakeStoreAPIClient = fakeStoreAPIClient;
     }
 
 
@@ -28,12 +29,11 @@ public class FakestoreProductService implements IProductService {
 //                id);
 
         // if it's null
-        ResponseEntity<FakestoreProductDTO> fakestoreProductDtoResponseEntity = restTemplate.getForEntity("http://fakestoreapi.com/products/{id}" ,
+        ResponseEntity<FakestoreProductDTO> fakestoreProductDtoResponseEntity = fakeStoreAPIClient.getForEntity("http://fakestoreapi.com/products/{id}" ,
                 FakestoreProductDTO.class,
                 id);
 
-        if(fakestoreProductDtoResponseEntity.hasBody() &&
-                fakestoreProductDtoResponseEntity.getStatusCode().equals(HttpStatusCode.valueOf(200))){
+        if(fakeStoreAPIClient.validateResponse(fakestoreProductDtoResponseEntity)){
             return fakestoreProductDtoResponseEntity.getBody().from(fakestoreProductDtoResponseEntity.getBody());
         }
 
@@ -44,7 +44,7 @@ public class FakestoreProductService implements IProductService {
     public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
 
-        ResponseEntity<FakestoreProductDTO[]> response = restTemplate.getForEntity("https://fakestoreapi.com/products",
+        ResponseEntity<FakestoreProductDTO[]> response = fakeStoreAPIClient.getForEntity("https://fakestoreapi.com/products",
                 FakestoreProductDTO[].class);
 
         if(response.hasBody() &&
@@ -72,7 +72,7 @@ public class FakestoreProductService implements IProductService {
 
         FakestoreProductDTO fakestoreProductDTO = product.convertFakeStoreProduct();
 
-        ResponseEntity<FakestoreProductDTO> response = this.putForEntity("https://fakestoreapi.com/products/{id}",
+        ResponseEntity<FakestoreProductDTO> response = fakeStoreAPIClient.putForEntity("https://fakestoreapi.com/products/{id}",
                 fakestoreProductDTO,
                 FakestoreProductDTO.class,
                 id);
