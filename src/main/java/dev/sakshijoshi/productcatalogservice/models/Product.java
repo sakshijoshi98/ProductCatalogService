@@ -1,6 +1,7 @@
 package dev.sakshijoshi.productcatalogservice.models;
 
 import dev.sakshijoshi.productcatalogservice.dtos.CategoryDTO;
+import dev.sakshijoshi.productcatalogservice.dtos.FakestoreProductDTO;
 import dev.sakshijoshi.productcatalogservice.dtos.ProductDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,5 +32,21 @@ public class Product extends BaseModel{
         }
 
         return productDTO;
+    }
+
+
+    public FakestoreProductDTO convertFakeStoreProduct() {
+        FakestoreProductDTO fakestoreProductDTO = new FakestoreProductDTO();
+
+        fakestoreProductDTO.setId(this.getId());
+        fakestoreProductDTO.setTitle(this.getName());
+        fakestoreProductDTO.setDescription(this.getDescription());
+        fakestoreProductDTO.setPrice(this.getPrice());
+        fakestoreProductDTO.setImage(this.getImageURL());
+        if(this.getCategory() != null) {
+            fakestoreProductDTO.setCategory(this.getCategory().getName());
+        }
+
+        return fakestoreProductDTO;
     }
 }

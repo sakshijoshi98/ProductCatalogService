@@ -52,6 +52,29 @@ public class ProductController {
     @GetMapping("/products")
     List<ProductDTO> getAllProduct(){
         List<ProductDTO> productDTOList = new ArrayList<>();
+
+        List<Product> products = productService.getAllProducts();
+
+        if(products != null){
+            for(Product product : products){
+                ProductDTO productDto = product.convert();
+                productDTOList.add(productDto);
+            }
+        }
+
         return productDTOList;
+    }
+
+    @PutMapping("/products/{productId}")
+    ProductDTO updateProduct(@PathVariable("productId") Long productId, @RequestBody ProductDTO productDTO){
+        ProductDTO productResponseDTO = new ProductDTO();
+
+        Product product = productService.replaceProduct(productDTO.convertToProduct(),productId);
+
+        if(product != null){
+            return product.convert();
+        }
+
+        return null;
     }
 }
